@@ -182,7 +182,7 @@ export default function Home(): JSX.Element {
 
       {/* ================= FOOTER ================= */}
       <footer className="bg-green-700 text-white text-center p-4">
-        Rubbish bin Collection company 2026
+        COSC2758 Final Programming Challenge © 2026
       </footer>
     </div>
   );
