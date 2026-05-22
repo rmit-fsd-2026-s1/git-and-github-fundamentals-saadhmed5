@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { calculateCollection } from "../services/api";
-import { useAppContext } from "../context/AppContext";
 import { useState } from "react";
 
 export default function Home() {
@@ -18,9 +17,8 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [price, setPrice] = useState<number | null>(null);
   const [apiError, setApiError] = useState("");
-
-  const { price, setPrice } = useAppContext();
 
   function handleChange(
     e: React.ChangeEvent<
@@ -65,7 +63,8 @@ export default function Home() {
     }
 
     if (form.notes.length > 150) {
-      newErrors.notes = "Notes must be less than 150 characters.";
+      newErrors.notes =
+        "Notes must be less than 150 characters.";
     }
 
     setErrors(newErrors);
@@ -84,12 +83,16 @@ export default function Home() {
       setLoading(true);
       setApiError("");
 
-      const response: any = await calculateCollection(form.binType);
+      const response: any = await calculateCollection(
+        form.binType
+      );
 
       setPrice(response.collectionPrice);
       setSubmitted(true);
     } catch (error) {
-      setApiError("Failed to calculate collection price.");
+      setApiError(
+        "Failed to calculate collection price."
+      );
     } finally {
       setLoading(false);
     }
@@ -100,6 +103,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col">
+      {/* HEADER */}
       <header className="bg-green-700 text-white p-6 shadow-md">
         <h1 className="text-4xl font-bold text-center">
           Smart Trash Bin Collection
@@ -110,20 +114,27 @@ export default function Home() {
         </p>
       </header>
 
+      {/* MAIN CONTENT */}
       <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 p-5 max-w-7xl mx-auto w-full">
+        {/* LEFT SIDE FORM */}
         <section className="bg-white rounded-2xl shadow-xl p-6 border border-green-100">
           <h2 className="text-2xl font-bold text-green-800 mb-6">
             Collection Request Form
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5"
+          >
             <div>
               <label className="block font-semibold mb-1 text-gray-700">
                 Customer Name
               </label>
 
               {errors.name && (
-                <p className="text-red-600 text-sm mb-1">{errors.name}</p>
+                <p className="text-red-600 text-sm mb-1">
+                  {errors.name}
+                </p>
               )}
 
               <input
@@ -141,7 +152,9 @@ export default function Home() {
               </label>
 
               {errors.address && (
-                <p className="text-red-600 text-sm mb-1">{errors.address}</p>
+                <p className="text-red-600 text-sm mb-1">
+                  {errors.address}
+                </p>
               )}
 
               <input
@@ -159,7 +172,9 @@ export default function Home() {
               </label>
 
               {errors.binType && (
-                <p className="text-red-600 text-sm mb-1">{errors.binType}</p>
+                <p className="text-red-600 text-sm mb-1">
+                  {errors.binType}
+                </p>
               )}
 
               <select
@@ -168,11 +183,25 @@ export default function Home() {
                 onChange={handleChange}
                 className={inputStyle}
               >
-                <option value="">Select bin type</option>
-                <option value="General Waste">General Waste</option>
-                <option value="Recycling">Recycling</option>
-                <option value="Green Waste">Green Waste</option>
-                <option value="Hard Rubbish">Hard Rubbish</option>
+                <option value="">
+                  Select bin type
+                </option>
+
+                <option value="General Waste">
+                  General Waste
+                </option>
+
+                <option value="Recycling">
+                  Recycling
+                </option>
+
+                <option value="Green Waste">
+                  Green Waste
+                </option>
+
+                <option value="Hard Rubbish">
+                  Hard Rubbish
+                </option>
               </select>
             </div>
 
@@ -202,7 +231,9 @@ export default function Home() {
               </label>
 
               {errors.notes && (
-                <p className="text-red-600 text-sm mb-1">{errors.notes}</p>
+                <p className="text-red-600 text-sm mb-1">
+                  {errors.notes}
+                </p>
               )}
 
               <textarea
@@ -223,16 +254,20 @@ export default function Home() {
               disabled={loading}
               className="w-full bg-green-700 text-white p-3 rounded-lg font-bold hover:bg-green-800 transition disabled:bg-gray-400"
             >
-              {loading ? "Calculating..." : "Submit Request"}
+              {loading
+                ? "Calculating..."
+                : "Submit Request"}
             </button>
           </form>
         </section>
 
+        {/* RIGHT SIDE SUMMARY */}
         <section className="bg-white rounded-2xl shadow-xl p-6 border border-green-100">
           <h2 className="text-2xl font-bold text-green-800 mb-6">
             Request Summary
           </h2>
 
+          {/* IMAGE */}
           <Image
             src="/trash-bin.png"
             alt="Trash Bin"
@@ -243,23 +278,29 @@ export default function Home() {
 
           <div className="space-y-4 text-gray-800">
             <p>
-              <strong>Name:</strong> {form.name || "-"}
+              <strong>Name:</strong>{" "}
+              {form.name || "-"}
             </p>
 
             <p>
-              <strong>Address:</strong> {form.address || "-"}
+              <strong>Address:</strong>{" "}
+              {form.address || "-"}
             </p>
 
             <p>
-              <strong>Bin Type:</strong> {form.binType || "-"}
+              <strong>Bin Type:</strong>{" "}
+              {form.binType || "-"}
             </p>
 
             <p>
-              <strong>Collection Date:</strong> {form.collectionDate || "-"}
+              <strong>Collection Date:</strong>{" "}
+              {form.collectionDate || "-"}
             </p>
 
             <p>
-              <strong>Notes:</strong> {form.notes || "No notes provided"}
+              <strong>Notes:</strong>{" "}
+              {form.notes ||
+                "No notes provided"}
             </p>
 
             {loading && (
@@ -269,7 +310,9 @@ export default function Home() {
             )}
 
             {apiError && (
-              <p className="text-red-600 font-semibold">{apiError}</p>
+              <p className="text-red-600 font-semibold">
+                {apiError}
+              </p>
             )}
 
             {price !== null && (
@@ -285,7 +328,8 @@ export default function Home() {
                 </h3>
 
                 <p className="text-green-700 mt-2">
-                  Your trash bin collection request has been scheduled.
+                  Your trash bin collection request
+                  has been scheduled.
                 </p>
               </div>
             )}
